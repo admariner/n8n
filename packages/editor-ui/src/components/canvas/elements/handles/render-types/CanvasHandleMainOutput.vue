@@ -27,6 +27,8 @@ const isHovered = ref(false);
 
 const renderOptions = computed(() => render.value.options as CanvasNodeDefaultRender['options']);
 
+const runDataTotal = computed(() => runData.value?.total ?? 0);
+
 const runDataLabel = computed(() =>
 	runData.value
 		? i18n.baseText('ndv.output.items', {
@@ -38,7 +40,7 @@ const runDataLabel = computed(() =>
 
 const isHandlePlusVisible = computed(() => !isConnecting.value || isHovered.value);
 
-const plusStatus = computed(() => (runData.value ? 'success' : 'default'));
+const plusType = computed(() => (runDataTotal.value > 0 ? 'success' : 'default'));
 
 const plusLineSize = computed(
 	() =>
@@ -46,7 +48,7 @@ const plusLineSize = computed(
 			small: 46,
 			medium: 66,
 			large: 80,
-		})[(renderOptions.value.outputs?.labelSize ?? runData.value) ? 'large' : 'small'],
+		})[(runDataTotal.value > 0 ? 'large' : renderOptions.value.outputs?.labelSize) ?? 'small'],
 );
 
 function onMouseEnter() {
@@ -73,7 +75,7 @@ function onClickAdd() {
 				data-test-id="canvas-handle-plus"
 				:line-size="plusLineSize"
 				:handle-classes="handleClasses"
-				:status="plusStatus"
+				:type="plusType"
 				@mouseenter="onMouseEnter"
 				@mouseleave="onMouseLeave"
 				@click:plus="onClickAdd"
